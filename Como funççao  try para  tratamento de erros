@@ -1,0 +1,99 @@
+--Aula 35
+--TRY ... CATCH
+--Implementação de tratamento de erros no SQL
+----------------------------------------------------------
+
+use
+
+
+SQL_Curso_1
+
+
+go
+
+
+SELECT x.*
+  INTO tTemp 
+  FROM (
+		 select row_number() over( order by id_aluno) linha, 
+		        y.id_aluno, y.nome, y.sexo, y.nome_curso, y.data_inicio, y.data_termino, y.valor
+		   from (
+		 select  a.id_aluno, a.nome, a.sexo, c.nome_curso, t.data_inicio, t.data_termino, at.valor
+			from alunosxturmas at
+				 inner join turmas t on (t.id_turma = at.id_turma)
+				 inner join cursos c on (c.id_curso = t.id_curso)
+ 				 inner join alunos a on (a.id_aluno = at.id_aluno) ) y
+	   ) x;
+
+select * from tTemp;
+
+
+---------
+
+
+Begin try
+
+		select *  from  tteMtable
+end  try
+
+begin   catch
+  select
+   ERROR_NUMBER() as Numero, 
+   ERROR_MESSAGE() as Mensagem
+end  catch
+
+--------
+
+
+create procedure  prc_exemplo
+
+as
+select * from TemTvble  
+
+go
+
+
+Begin  try
+execute prc_exemplo
+
+end  try
+
+begin  catch
+select
+ERROR_NUMBER() as  Numero,
+ERROR_MESSAGE() as  Mensagem
+
+
+
+end  catch
+
+-----  exemplo 3
+
+begin 
+
+ begin  try
+  select 1/0
+ end   try 
+
+ begin  catch
+ PRINT 'Erro número   : ' + convert(varchar, error_number());
+		PRINT 'Erro mensagem : ' + error_message();
+		PRINT 'Erro severiry : ' + convert(varchar, error_severity());
+		PRINT 'Erro state    : ' + convert(varchar, error_state());
+		PRINT 'Erro line     : ' + convert(varchar, error_line());
+		PRINT 'Erro proc     : ' + error_procedure();
+
+
+
+ end  catch
+
+
+
+
+end
+
+drop  procedure prc_exemplo
+
+drop table tTemp
+
+
